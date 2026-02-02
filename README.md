@@ -20,5 +20,5 @@
 
 ## 🔗 Свяжись со мной
 [![Telegram](https://img.shields.io/badge/Telegram-@LEGGENDA3-blue?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/LEGGENDA3)
-[![Email](https://img.shields.io/badge/Email-davidfominov2007@gmail.com-red?style=for-the-badge&logo=google&logoColor=white)](https://mail.google.com/:davidfominov2007@gmail.com)
+[![Email](https://img.shields.io/badge/Email-davidfominov2007@gmail.com-red?style=for-the-badge&logo=google&logoColor=white)](https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox)
 
