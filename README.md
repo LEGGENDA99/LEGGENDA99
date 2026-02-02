@@ -1,4 +1,4 @@
-# Привет! 👋 Я Давид
+# Привет!  Я Давид
 
 [![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=Студент+из+Владивостока)](https://git.io/typing-svg)
 
@@ -20,5 +20,5 @@
 
 ## 🔗 Свяжись со мной
 [![Telegram](https://img.shields.io/badge/Telegram-@LEGGENDA3-blue?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/LEGGENDA3)
-[![Email](https://img.shields.io/badge/Email-davidfominov2007@gmail.com-red?style=for-the-badge&logo=google&logoColor=white)](https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox)
+[![Email](https://img.shields.io/badge/Email-davidfominov2007@gmail.com-red?style=for-the-badge&logo=google&logoColor=white)](mailto:davidfominov2007@gmail.com)
 
