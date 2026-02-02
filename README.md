@@ -12,6 +12,8 @@
 ![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
 
+![Описания гифки](https://i.pinimg.com/originals/cc/fb/2d/ccfb2d3127798e85c8f889167d59d336.gif)
+
 
 
 
