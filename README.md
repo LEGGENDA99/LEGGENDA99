@@ -2,7 +2,7 @@
 
 [![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=Студент+из+Владивостока)](https://git.io/typing-svg)
 
-Студент IThub, изучаю Python, JavaScript, веб-разработка. 🌍 Vladivostok, RU.
+Студент IThub, изучаю Python, JavaScript, веб-разработка.
 
 ## 🛠️ Tech Stack
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
