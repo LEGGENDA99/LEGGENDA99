@@ -1,0 +1,40 @@
+type Level = 1 | 2 | 3 | 4
+
+function nextLevel (level: Level):Level {
+    if (level === 1) {
+        return 2
+    }
+    if (level === 2) {
+        return 3
+    }
+    if (level === 3) {
+        return 4
+    }
+    return 4
+}
+
+interface Student {
+    name: string
+    age: number
+    level:Level
+}
+
+const student1: Student = {  
+    name: "Anton",
+    age: 15,
+    level: 4
+};
+
+const student2: Student = {  
+    name: "Valera",
+    age: 13,
+    level: 2
+};
+
+
+student1.level = nextLevel(student1.level);
+console.log('next', student1.level);
+
+
+student2.level = nextLevel(student2.level);
+console.log('next', student2.level);
