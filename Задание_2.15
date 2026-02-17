@@ -1,0 +1,97 @@
+abstract class OrderItem {
+    constructor(public name: string) {}
+
+    abstract calculateTotal(): number;
+}
+
+
+class ProductItem extends OrderItem {
+    constructor(
+        name: string,
+        public price: number,
+        public quantity: number
+    ) {
+        super(name);
+    }
+
+    override calculateTotal(): number {
+        return this.price * this.quantity;
+    }
+}
+
+
+class CompositeOrderItem extends OrderItem {
+    public subItems: OrderItem[] = [];
+
+    constructor(name: string) {
+        super(name);
+    }
+
+    add(item: OrderItem): void {
+        this.subItems.push(item);
+    }
+
+    override calculateTotal(): number {
+        let total = 0;
+        for (const item of this.subItems) {
+            total += item.calculateTotal();
+        }
+        return total;
+    }
+}
+
+
+class OrderFactory {
+    static createFromCatalog(items: string[]): OrderItem[] {
+        const parsed = items.map(json => JSON.parse(json));
+        return parsed.map(obj => this.parseItem(obj));
+    }
+
+    private static parseItem(obj: any): OrderItem {
+        if (obj.subItems) {
+            const composite = new CompositeOrderItem(obj.name);
+
+            for (const child of obj.subItems) {
+                composite.add(this.parseItem(child));
+            }
+
+            return composite;
+        }
+
+        return new ProductItem(obj.name, obj.price, obj.quantity);
+    }
+}
+
+
+const catalog = [
+`{
+  "name": "Order #1",
+  "subItems": [
+    {
+      "name": "Laptop",
+      "price": 1200,
+      "quantity": 1
+    },
+    {
+      "name": "Accessories",
+      "subItems": [
+        {
+          "name": "Mouse",
+          "price": 25,
+          "quantity": 2
+        },
+        {
+          "name": "Keyboard",
+          "price": 70,
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}`
+];
+
+
+const orders = OrderFactory.createFromCatalog(catalog);
+
+console.log("Итоговая сумма заказа:", orders[0].calculateTotal());
