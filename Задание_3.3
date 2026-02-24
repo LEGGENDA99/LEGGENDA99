@@ -1,0 +1,177 @@
+type Currency = "RUB"
+type Money = {amount: number; currency: Currency}
+type InvoiceStatus = "draft" | "issued" | "paid" | "void"
+type CustomerType = "individual" | "company"
+type PaymentResult =
+    | {ok: true; paidAt: string}
+    | {ok: false; reason: "declined" | "network_error"}
+
+interface PaymentMethod {
+    pay(invoice: Invoice, amount: Money): PaymentResult
+}
+
+interface Billable {
+    title: string
+    total(): Money
+}
+
+abstract class InvoiceLine implements Billable {
+    public readonly title: string
+
+    protected constructor(title: string, protected readonly qty: number) {
+        this.title = title
+    }
+
+    protected abstract unitPrice(): Money
+
+    public total(): Money {
+        const price = this.unitPrice()
+        return {amount: price.amount * this.qty, currency: price.currency}
+    }
+}
+
+class LaborLine extends InvoiceLine {
+    constructor(title: string, qtyHours: number, private readonly rubPerHour: number){
+        super(title, qtyHours)
+    }
+    protected unitPrice(): Money {
+        return {amount: this.rubPerHour, currency: "RUB"}
+    }
+}
+
+class Invoice {
+    private status: InvoiceStatus = "draft"
+    public readonly customerType: CustomerType
+
+    constructor(
+        public readonly id: string, 
+        private readonly Lines: Billable[],
+        customerType: CustomerType = "individual"
+    ){
+        this.customerType = customerType
+    }
+
+    public issue(): void{
+        if (this.status !== "draft") {
+            throw new Error("Can issue only from draft")
+        }
+        this.status = "issued"
+    }
+    
+    public markPaid(): void{
+        if (this.status !== "issued") {
+            throw new Error("Can paid only issued Invoice")
+        }
+        this.status = "paid"
+    }
+    
+    public getStatus(): InvoiceStatus {
+        return this.status
+    }
+    
+    public getLines(): readonly Billable[]{
+        return this.Lines
+    }
+}
+
+class CashPayment implements PaymentMethod {
+    pay(invoice: Invoice, amount: Money): PaymentResult{
+        if (invoice.getStatus() !== "issued") {
+            return {ok: false, reason: "declined"}
+        }
+        return {ok: true, paidAt: new Date().toISOString()}
+    }
+}
+
+class BankTransferPayment implements PaymentMethod {
+    pay(invoice: Invoice, amount: Money): PaymentResult {
+        if (invoice.getStatus() !== "issued") {
+            return {ok: false, reason: "declined"}
+        }
+        
+        if (invoice.customerType !== "company") {
+            return {ok: false, reason: "declined"}
+        }
+        
+        if (amount.amount <= 0) {
+            return {ok: false, reason: "declined"}
+        }
+        
+        return {ok: true, paidAt: new Date().toISOString()}
+    }
+}
+
+class InvoiceCalculator {
+    public sum(Lines: readonly Billable[]): Money {
+        return Lines.reduce(
+            (acc, line) => ({amount: acc.amount + line.total().amount, currency: "RUB"}),
+            {amount: 0, currency: "RUB"}
+        )
+    }
+}
+
+function demo(): Invoice {
+    const lines = [
+        new LaborLine("Диагностика", 2, 1500),
+        new LaborLine("Подготовка", 4, 2000),
+        new LaborLine("Монтаж", 10, 6000),
+        new LaborLine("Выравнивание", 2, 1500)
+    ]
+    const invoice = new Invoice("INV-2026-0001", lines, "company")
+    return invoice
+}
+
+function getResult(invoice: Invoice){
+    invoice.issue()
+    const calculator = new InvoiceCalculator()
+
+    const total: Money = calculator.sum(invoice.getLines())
+ 
+    console.log("=== Payment Methods Demo ===")
+    console.log("Customer Type:", invoice.customerType)
+    console.log("Total:", total)
+    
+    const cashPayment = new CashPayment()
+    const cashResult = cashPayment.pay(invoice, total)
+    console.log("\n1. Cash Payment:")
+    console.log(cashResult)
+    
+    const bankPayment = new BankTransferPayment()
+    const bankResult = bankPayment.pay(invoice, total)
+    console.log("\n2. Bank Transfer Payment:")
+    console.log(bankResult)
+    
+    console.log("\nInvoice Status:", invoice.getStatus())
+    console.log(invoice)
+}
+function demoIndividual() {
+    const lines = [
+        new LaborLine("Консультация", 1, 3000)
+    ]
+    
+    const invoice = new Invoice("INV-2026-0002", lines, "individual")
+    invoice.issue()
+    
+    const calculator = new InvoiceCalculator()
+    const total: Money = calculator.sum(invoice.getLines())
+    
+    console.log("\n=== Individual Customer Demo ===")
+    console.log("Customer Type:", invoice.customerType)
+    console.log("Total:", total)
+    
+    const cashPayment = new CashPayment()
+    const cashResult = cashPayment.pay(invoice, total)
+    console.log("\n1. Cash Payment:")
+    console.log(cashResult)
+    
+    const bankPayment = new BankTransferPayment()
+    const bankResult = bankPayment.pay(invoice, total)
+    console.log("\n2. Bank Transfer Payment (should be declined):")
+    console.log(bankResult)
+}
+
+console.log("=== MAIN DEMO (Company) ===")
+const invoice = demo()
+getResult(invoice)
+
+demoIndividual()
